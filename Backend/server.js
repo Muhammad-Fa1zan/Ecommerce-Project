@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDb from './config/db.js';
 import authRouter from './routes/authRoute.js';
+import productRouter from './routes/authProduct.js';
 
 
 const app = express();
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth' , authRouter)
+app.use('/api/product' , productRouter )
 
 connectDb();
 

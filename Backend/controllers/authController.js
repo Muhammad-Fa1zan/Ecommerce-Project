@@ -4,9 +4,9 @@ import { jwtToken } from '../utlis/jwtToken.js';
 
 export const signup = asyncHandler(async (req, res) => {
 
-   const { fullname, lastname, email, password, role } = await req.body;
+   const { firstname, lastname, email, password, role } = await req.body;
 
-   if (!fullname || !email || !password) {
+   if (!firstname|| !email || !password) {
       res.status(400);
       throw new Error('Please add all fields');
    };
@@ -18,7 +18,7 @@ export const signup = asyncHandler(async (req, res) => {
    };
 
    const user = User.create({
-      fullname,
+      firstname,
       lastname,
       email,
       password,
@@ -27,12 +27,12 @@ export const signup = asyncHandler(async (req, res) => {
 
    return res.status(201).json({
       _id: user._id,
-      fullname: user.fullname,
+      firstname: user.firstname,
       lastname: user.lastname,
       email: user.email,
-      role: 'role',
+      role: 'user',
       token: jwtToken(user._id)
-   },{message : 'Succesfully Signup'})
+   }, { message: 'Succesfully Signup' });
 
 });
 
@@ -59,10 +59,16 @@ export const login = asyncHandler(async (req, res) => {
 
    return res.status(201).json({
       _id: user._id,
-      fullname: user.fullname,
+      firstname: user.firstname,
       lastname: user.lastname,
       email: user.email,
       role: user.role,
       token: jwtToken(user._id),
-   }, {message : 'Succesfully Login'});
-})
+   }, { message: 'Succesfully Login' });
+});
+
+export const getUser = asyncHandler(async (req, res) => {
+   const user = req.user;
+   console.log(user);
+   return res.status(200).json(user);
+});
