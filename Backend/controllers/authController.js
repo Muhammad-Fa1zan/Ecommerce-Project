@@ -4,7 +4,7 @@ import { jwtToken } from '../utlis/jwtToken.js';
 
 export const signup = asyncHandler(async (req, res) => {
 
-   const { firstname, lastname, email, password, role } = await req.body;
+   const { firstname, lastname, email, password,} = await req.body;
 
    if (!firstname|| !email || !password) {
       res.status(400);
@@ -17,12 +17,11 @@ export const signup = asyncHandler(async (req, res) => {
       throw new Error('User already existed');
    };
 
-   const user = User.create({
+   const user = await User.create({
       firstname,
       lastname,
       email,
       password,
-      role,
    });
 
    return res.status(201).json({

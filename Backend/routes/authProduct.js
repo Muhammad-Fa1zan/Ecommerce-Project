@@ -5,14 +5,14 @@ import {
     getProducts,
     getSingleProduct,
     updateProduct
-} from '../controllers/productContoller';
-import { verifyUser } from '../middleware/verifyUser';
-import { isAdmin } from '../middleware/adminMiddleware';
+} from '../controllers/productContoller.js';
+import { verifyUser } from '../middleware/verifyUser.js';
+import { isAdmin } from '../middleware/adminMiddleware.js';
 
 
 const productRouter = express.Router();
 
-productRouter.post('/create-product/:id', verifyUser, isAdmin, createProducts);
+productRouter.post('/create-product', verifyUser, isAdmin, createProducts);
 productRouter.put('/update-product/:id', verifyUser, isAdmin, updateProduct);
 productRouter.delete('/delete-product/:id', verifyUser, isAdmin, deleteProduct);
 productRouter.get('/products', getProducts);

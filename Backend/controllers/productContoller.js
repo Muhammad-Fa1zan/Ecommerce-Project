@@ -1,5 +1,5 @@
 import asyncHandler from 'express-async-handler'
-import Product from '../models/products'
+import Product from '../models/products.js'
 
 
 export const createProducts = asyncHandler(async (req, res) => {
