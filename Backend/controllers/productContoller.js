@@ -4,14 +4,14 @@ import Product from '../models/products'
 
 export const createProducts = asyncHandler(async (req, res) => {
 
-    const { name, description, price, stockCount, image, category } = await req.body;
+    const { name, description, price, stockCount, image, category } = req.body;
 
-    if (!name || !description || !price || !category) {
+    if (!name || !description || !category) {
         res.status(401);
         throw new Error("Please provide all required fields");
     };
 
-    const Product = new Product(
+    const product = new Product(
         {
             name,
             description,
@@ -23,16 +23,16 @@ export const createProducts = asyncHandler(async (req, res) => {
         },
     );
 
-    const CreatedProduct = await Product.save();
+    const CreatedProduct = await product.save();
 
     return res.status(200).json({ CreatedProduct, messsage: 'Product Created' })
 })
 
 export const updateProduct = asyncHandler(async (req, res) => {
 
-    const { name, description, price, stockCount, image, category } = await req.body;
+    const { name, description, price, stockCount, image, category } = req.body;
     const { id } = req.params;
-    const product = await Product.findById({ id });
+    const product = await Product.findById(id);
 
     if (!product) {
         res.status(404)
@@ -41,10 +41,11 @@ export const updateProduct = asyncHandler(async (req, res) => {
 
     product.name = name || product.name;
     product.description = description || product.description;
-    product.price = price || product.price;
-    product.stockCount = stockCount || product.stockCount;
     product.image = image || product.image;
     product.category = category || product.category;
+    if (stockCount !== undefined) product.stockCount = stockCount;
+    if (price !== undefined) product.price = price;
+
 
     const updatedProduct = await product.save();
 
@@ -54,7 +55,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
 });
 
 export const deleteProduct = asyncHandler(async (req, res) => {
-    const product = Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id);
 
     if (!product) {
         res.status(404)
@@ -77,16 +78,20 @@ export const getProducts = asyncHandler(async (req, res) => {
     };
 
     if (req.query.maxPrice || req.query.minPrice) {
-        filter.price = {
-            $gte: req.query.minPrice,
-            $lte: req.query.maxPrice
-        }
-    };
+        filter.price = {};
+    }
+
+    if (req.query.maxPrice) {
+        filter.price.$lte = Number(req.query.maxPrice);
+    }
+    if (req.query.minPrice) {
+        filter.price.$gte = Number(req.query.minPrice);
+    }
 
     if (req.query.search) {
         filter.name = {
             $regex: req.query.search,
-            $option: 'i',
+            $options: 'i',
         }
     }
 
@@ -98,11 +103,6 @@ export const getProducts = asyncHandler(async (req, res) => {
     const skip = (page - 1) * limit;
 
     const products = await Product.find(filter).limit(limit).skip(skip).sort({ createdAt: -1 });
-
-    if (!products) {
-        res.status(401);
-        throw new Error('No Product Found')
-    };
 
     const totalProducts = await Product.countDocuments(filter);
     const totalPage = Math.ceil(totalProducts / limit);
@@ -120,7 +120,7 @@ export const getProducts = asyncHandler(async (req, res) => {
 export const getSingleProduct = asyncHandler(async (req, res) => {
 
     const { id } = req.params;
-    const product = await Product.findById({ id });
+    const product = await Product.findById(id);
 
     if (!product) {
         res.status(401)
