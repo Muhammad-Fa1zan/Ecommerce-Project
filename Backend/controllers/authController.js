@@ -4,7 +4,7 @@ import { jwtToken } from '../utlis/jwtToken.js';
 
 export const signup = asyncHandler(async (req, res) => {
 
-   const { firstname, lastname, email, password,} = await req.body;
+   const { firstname, lastname, email, password,} =  req.body;
 
    if (!firstname|| !email || !password) {
       res.status(400);
@@ -37,7 +37,7 @@ export const signup = asyncHandler(async (req, res) => {
 
 export const login = asyncHandler(async (req, res) => {
 
-   const { email, password } = await req.body;
+   const { email, password } = req.body;
 
    if (!email || !password) {
       res.status(400);
