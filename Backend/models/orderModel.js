@@ -12,15 +12,19 @@ const orderSchema = mongoose.Schema(
                 product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
                 name: { type: String },
                 quantity: { type: Number },
-                price: { type: Number },
+                price: { type: Number, immutable: true },
             },
         ],
 
         totalPrice: { type: Number, require: true },
         status: {
             type: String,
-            enum: ["Pending", "Processing", "Shipped", "Delivered"],
-            default: "Pending",
+            status: {
+                type: String,
+                enum: ['PLACED', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED'],
+                default: 'PLACED'
+            }
+
         }
     },
     { timestamps: true }

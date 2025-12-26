@@ -35,9 +35,9 @@ export const addtoCart = asyncHandler(async (req, res) => {
     let cart = await Cart.findOne({ user: userID });
 
     if (!cart) {
-        cart = new Cart({
+        cart = await new Cart({
             user: userID,
-            item: [{
+            items: [{
                 product: productId,
                 quantity: qty,
                 priceAtThatTime: product.price,
@@ -45,12 +45,12 @@ export const addtoCart = asyncHandler(async (req, res) => {
         })
     }
     else {
-        const itemIndex = cart.findIndex((item) => item.Product.toString() === productId);
+        const itemIndex = cart.items.findIndex((item) => item.Product.toString() === productId);
         if (itemIndex > -1) {
-            cart = cart[itemIndex].quantity += qty;
+            cart.items[itemIndex].quantity += qty;
         }
         else {
-            cart.item.push({
+            cart.items.push({
                 product: productId,
                 quantity: qty,
                 priceAtThatTime: product.price,
@@ -58,9 +58,9 @@ export const addtoCart = asyncHandler(async (req, res) => {
         }
     };
 
-    cartItem.totalPrice = cart.item.reduce((acc, item) => acc + item.quantity * item.priceAtThatTime);
+    cart.totalPrice = cart.items.reduce((acc, item) => acc + item.quantity * item.priceAtThatTime, 0);
 
-    await cartItem.save();
+    await cart.save();
 
     res.status(200).json(cart);
 
@@ -71,7 +71,7 @@ export const removeItem = asyncHandler(async (req, res) => {
     const userID = req.user._id;
     const { productId } = req.body;
 
-    let cart = await findOne({ user: userID });
+    let cart = await Cart.findOne({ user: userID });
 
     if (!cart) {
         res.status(404);
