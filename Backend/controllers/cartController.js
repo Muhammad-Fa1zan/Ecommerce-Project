@@ -1,6 +1,17 @@
 import asyncHandler from 'express-async-handler'
-import Cart from '../models/cartItem';
-import Product from '../models/products.js'
+import Cart from '../models/cartItemModel.js';
+import Product from '../models/productsModel.js';
+
+
+export const getCart = asyncHandler(async (req, res) => {
+    const userID = req.user._id;
+    const cart = await Cart.findOne({ user: userID });
+    if (!cart) {
+        res.status(404);
+        throw new Error('Cart not found');
+    }
+    res.status(200).json(cart);
+});
 
 export const addtoCart = asyncHandler(async (req, res) => {
 
@@ -73,5 +84,18 @@ export const removeItem = asyncHandler(async (req, res) => {
     await cart.save();
     res.status(200).json(cart);
 });
+
+export const removeAllItems = asyncHandler(async (req, res) => {
+    const userID = req.user._id;
+
+    const cart = await Cart.findOneAndDelete({ user: userID });
+
+    if (!cart) {
+        res.status(404);
+        throw new Error('Cart not found');
+    }
+
+    res.status(200).json({ message: 'Cart cleared' });
+})
 
 

@@ -4,9 +4,9 @@ import { jwtToken } from '../utlis/jwtToken.js';
 
 export const signup = asyncHandler(async (req, res) => {
 
-   const { firstname, lastname, email, password,} =  req.body;
+   const { firstname, lastname, email, password, } = req.body;
 
-   if (!firstname|| !email || !password) {
+   if (!firstname || !email || !password) {
       res.status(400);
       throw new Error('Please add all fields');
    };
@@ -24,13 +24,15 @@ export const signup = asyncHandler(async (req, res) => {
       password,
    });
 
+   const tokenGenerated = jwtToken(user._id);
+
    return res.status(201).json({
       _id: user._id,
       firstname: user.firstname,
       lastname: user.lastname,
       email: user.email,
       role: 'user',
-      token: jwtToken(user._id)
+      token: tokenGenerated
    }, { message: 'Succesfully Signup' });
 
 });

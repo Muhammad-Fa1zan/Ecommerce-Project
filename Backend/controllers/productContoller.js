@@ -1,5 +1,5 @@
 import asyncHandler from 'express-async-handler'
-import Product from '../models/products.js'
+import Product from '../models/productsModel.js'
 
 
 export const createProducts = asyncHandler(async (req, res) => {
@@ -19,7 +19,7 @@ export const createProducts = asyncHandler(async (req, res) => {
             stockCount,
             image,
             category,
-            createdBy: req.user._id,
+            createdBy: req.user.firstname + ' ' + req.user.lastname,
         },
     );
 
