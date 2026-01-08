@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import connectDb from './config/db.js';
 import authRouter from './routes/authRoute.js';
 import productRouter from './routes/authProduct.js';
+import orderRouter from './routes/authOrder.js';
+import cartRouter from './routes/authCart.js';
 
 
 const app = express();
@@ -12,8 +14,10 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/auth' , authRouter)
-app.use('/api/product' , productRouter )
+app.use('/api/auth', authRouter)
+app.use('/api/product', productRouter)
+app.use('/api/cart', cartRouter)
+app.use('/api/order', orderRouter)
 
 connectDb();
 

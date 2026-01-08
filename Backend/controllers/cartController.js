@@ -14,57 +14,68 @@ export const getCart = asyncHandler(async (req, res) => {
 });
 
 export const addtoCart = asyncHandler(async (req, res) => {
-
     const userID = req.user._id;
-    const { productId, quantity } = req.body;
-
-    let qty = quantity || 1;
+    const { productId, quantity = 1 } = req.body;
 
     const product = await Product.findById(productId);
-
     if (!product) {
         res.status(404);
-        throw new Error('product not found')
-    }
-
-    if (product.stockCount < qty) {
-        res.status(400);
-        throw new Error('product is out of stock')
+        throw new Error('Product not found');
     }
 
     let cart = await Cart.findOne({ user: userID });
 
     if (!cart) {
-        cart = await new Cart({
+        if (product.stockCount < quantity) {
+            res.status(400);
+            throw new Error('Not enough stock');
+        }
+
+        cart = new Cart({
             user: userID,
             items: [{
                 product: productId,
-                quantity: qty,
+                quantity,
                 priceAtThatTime: product.price,
             }],
-        })
-    }
-    else {
-        const itemIndex = cart.items.findIndex((item) => item.Product.toString() === productId);
+        });
+    } else {
+        const itemIndex = cart.items.findIndex(
+            item => item.product.toString() === productId.toString()
+        );
+
         if (itemIndex > -1) {
-            cart.items[itemIndex].quantity += qty;
-        }
-        else {
+            const newQty = cart.items[itemIndex].quantity + quantity;
+
+            if (product.stockCount < newQty) {
+                res.status(400);
+                throw new Error('Not enough stock');
+            }
+
+            cart.items[itemIndex].quantity = newQty;
+        } else {
+            if (product.stockCount < quantity) {
+                res.status(400);
+                throw new Error('Not enough stock');
+            }
+
             cart.items.push({
                 product: productId,
-                quantity: qty,
+                quantity,
                 priceAtThatTime: product.price,
-            })
+            });
         }
-    };
+    }
 
-    cart.totalPrice = cart.items.reduce((acc, item) => acc + item.quantity * item.priceAtThatTime, 0);
+    cart.totalPrice = cart.items.reduce(
+        (acc, item) => acc + item.quantity * item.priceAtThatTime,
+        0
+    );
 
     await cart.save();
-
     res.status(200).json(cart);
-
 });
+
 
 export const removeItem = asyncHandler(async (req, res) => {
 
@@ -78,7 +89,7 @@ export const removeItem = asyncHandler(async (req, res) => {
         throw new Error('Cart not found');
     }
 
-    cart.items = cart.items.filter((item) => item.product.toString() !== productId);
+    cart.items = cart.items.filter((item) => item.product.toString() !== productId.toString());
     cart.totalPrice = cart.items.reduce((acc, item) => acc + item.quantity * item.priceAtThatTime, 0);
 
     await cart.save();

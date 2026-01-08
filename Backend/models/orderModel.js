@@ -19,15 +19,15 @@ const orderSchema = mongoose.Schema(
         totalPrice: { type: Number, require: true },
         status: {
             type: String,
-            status: {
-                type: String,
-                enum: ['PLACED', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED'],
-                default: 'PLACED'
-            }
+            enum: ['pending', 'paid', 'shipped', 'delivered', 'cancelled'],
+            default: 'pending',
+        },
 
-        }
+        paidAt: Date,
+        deliveredAt: Date,
     },
-    { timestamps: true }
+
+{ timestamps: true }
 );
 
 const Order = mongoose.model('Order', orderSchema);

@@ -23,6 +23,14 @@ export const createOrder = asyncHandler(async (req, res) => {
          throw new Error('Product not found')
       };
 
+      if (product.stockCount < item.quantity) {
+         res.status(400);
+         throw new Error(`Not enough stock for ${product.name}`);
+      }
+
+      product.stockCount -= item.quantity;
+      await product.save();
+
       orderItems.push({
          product: product._id,
          name: product.name,
@@ -58,6 +66,12 @@ export const createOrder = asyncHandler(async (req, res) => {
    });
 
 });
+
+export const getMyOrders = asyncHandler( async (req , res) => {
+   const USERID = req.user._id;
+   const orders = await Order.find({user : USERID}).sort({createdAt : -1});
+   res.status(200).json(orders);
+})
 
 
 

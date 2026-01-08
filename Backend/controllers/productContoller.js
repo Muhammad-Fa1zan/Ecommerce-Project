@@ -19,7 +19,6 @@ export const createProducts = asyncHandler(async (req, res) => {
             stockCount,
             image,
             category,
-            createdBy: req.user.firstname + ' ' + req.user.lastname,
         },
     );
 
