@@ -22,9 +22,20 @@ const orderSchema = mongoose.Schema(
             enum: ['pending', 'paid', 'shipped', 'delivered', 'cancelled'],
             default: 'pending',
         },
-
-        paidAt: Date,
-        deliveredAt: Date,
+        isPaid : {
+            type : Boolean,
+            default : false
+        },
+        paidAt: {
+            type: Date,
+        },
+        isDelivered : {
+            type : Boolean,
+            default : false
+        },
+        deliveredAt: {
+            type: Date,
+        },
     },
 
 { timestamps: true }

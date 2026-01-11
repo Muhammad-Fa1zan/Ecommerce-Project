@@ -3,6 +3,13 @@ import Cart from '../models/cartItemModel.js';
 import Product from '../models/productsModel.js'
 import Order from '../models/orderModel.js';
 
+
+export const getMyOrders = asyncHandler(async (req, res) => {
+   const USERID = req.user._id;
+   const orders = await Order.find({ user: USERID }).sort({ createdAt: -1 });
+   res.status(200).json(orders);
+})
+
 export const createOrder = asyncHandler(async (req, res) => {
    const UserId = req.user._id;
 
@@ -67,11 +74,47 @@ export const createOrder = asyncHandler(async (req, res) => {
 
 });
 
-export const getMyOrders = asyncHandler( async (req , res) => {
-   const USERID = req.user._id;
-   const orders = await Order.find({user : USERID}).sort({createdAt : -1});
-   res.status(200).json(orders);
+export const orderStatusUpdate = asyncHandler(async (req, res) => {
+   const { orderId } = req.params;
+   const { status } = req.body;
+
+   const order = await Order.findById(orderId);
+
+   if (!order) {
+      res.status(404);
+      throw new Error('order not found')
+   };
+
+   order.status = status;
+   await Order.save();
+
+   res.status(200).json({ message: "order status has been change", order });
 })
 
+export const getAllOrders = asyncHandler(async (req, res) => {
+   const allOrders = await Order.find().populate('user', 'fisrtname email').sort({ createdAt: -1 });
+
+   res.status(200).json(allOrders);
+});
 
 
+export const payOrder = asyncHandler(async (req, res) => {
+   const order = await Order.findById(req.params.id);
+
+   if (!order) {
+      res.status(404);
+      throw new Error('order not found')
+   };
+
+   if (order.user.toString() !== req.user._id.toString()) {
+      res.status(403);
+      throw new Error('User not authorized')
+   };
+
+   order.isPaid = true;
+   order.paidAt = Date.now();
+
+   const updatedOrder = await order.save();
+
+   res.status(200).json(updatedOrder);
+})
