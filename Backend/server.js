@@ -3,9 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDb from './config/db.js';
 import authRouter from './routes/authRoute.js';
-import productRouter from './routes/authProduct.js';
-import orderRouter from './routes/authOrder.js';
-import cartRouter from './routes/authCart.js';
+import productRouter from './routes/productRoute.js';
+import orderRouter from './routes/orderRoute.js';
+import cartRouter from './routes/cartRoute.js';
 
 
 const app = express();
