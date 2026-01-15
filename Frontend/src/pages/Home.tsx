@@ -7,23 +7,6 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-
-      {/* Navbar */}
-      <nav className="bg-white border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <h1 className="text-xl font-black text-indigo-600">STORE.</h1>
-
-          <div className="flex items-center gap-4">
-            <Link to="/cart">
-              {user && <ShoppingCart className="size-5 text-slate-600" />}
-            </Link>
-            <Link to={user ? "/profile" : "/login"}>
-              <User className="size-5 text-slate-600" />
-            </Link>
-          </div>
-        </div>
-      </nav>
-
       {/* Hero */}
       <section className="bg-gradient-to-br from-indigo-600 to-indigo-500 text-white">
         <div className="max-w-7xl mx-auto px-6 py-20 text-center">

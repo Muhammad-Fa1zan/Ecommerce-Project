@@ -1,13 +1,15 @@
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthProvider';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 
 
 const SignupPage = () => {
 
     const { signup } = useAuth();
     const [loading, setLoading] = useState(false);
+
+    const Navigate = useNavigate();
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setLoading(true)
@@ -23,6 +25,7 @@ const SignupPage = () => {
         try {
             await signup(firstName, lastName, email, password);
             form.reset();
+            Navigate('/');
         } catch (error) {
             console.error("Signup failed:", error);
         } finally {

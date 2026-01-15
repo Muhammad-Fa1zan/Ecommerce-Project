@@ -1,27 +1,32 @@
 import { Mail, Lock, LogIn, ChevronRight } from 'lucide-react';
 import { useAuth } from '../context/AuthProvider';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const Login = () => {
 
-    const { login } = useAuth();
-
     const [loading, setLoading] = useState(false);
+
+    const { login } = useAuth();
+    const Navigate = useNavigate();
+
 
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setLoading(true);
 
-        const formData = new FormData(event.currentTarget);
+        const formEvent = event.currentTarget;
+        const formData = new FormData(formEvent);
 
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
 
         try {
-            await login(email, password)
+            await login(email, password);
+            formEvent.reset();
+            Navigate('/');
         } catch (error) {
             throw new Error('Your Enter Wrong Information')
         } finally {
