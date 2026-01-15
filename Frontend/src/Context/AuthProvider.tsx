@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import type { ReactNode } from "react";
 
+
 export interface User {
   _id: string;
   firstname: string;
@@ -44,7 +45,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const { data } = await axios.post<User>("/api/auth/login", {
+    const { data } = await axios.post<User>(`/api/auth/login`, {
       email,
       password,
     });
@@ -58,7 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     email: string,
     password: string
   ) => {
-    const { data } = await axios.post<User>("/api/auth/signup", {
+    const { data } = await axios.post<User>(`/api/auth/signup`, {
       firstname,
       lastname,
       email,
