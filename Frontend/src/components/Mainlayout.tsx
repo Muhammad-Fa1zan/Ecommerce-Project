@@ -5,7 +5,7 @@ function Mainlayout() {
   return (
     <>
       <Navbar />
-      <main className="pt-20">
+      <main>
         <Outlet/>
       </main>
     </>

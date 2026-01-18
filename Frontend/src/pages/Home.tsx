@@ -20,19 +20,23 @@ const HomePage = () => {
             A clean, fast and modern shopping experience built for you.
           </p>
 
-          <Link
+          <div className="flex justify-center gap-2 items-center">
+            <Link
             to="/products"
             className="inline-block mt-8 bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-slate-100 transition"
           >
             Explore Products
           </Link>
+
+          {user?.role === 'admin' && <Link className="inline-block mt-8 bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-slate-100 transition" to="/Create-Product">Create Product</Link>}
+          </div>
         </div>
       </section>
 
       {/* Features */}
       <section className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
+
           <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
             <Truck className="size-8 text-indigo-600 mb-4" />
             <h3 className="font-semibold text-lg">Fast Delivery</h3>
