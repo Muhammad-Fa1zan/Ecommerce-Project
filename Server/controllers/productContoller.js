@@ -4,7 +4,9 @@ import Product from '../models/productsModel.js'
 
 export const createProducts = asyncHandler(async (req, res) => {
 
-    const { name, description, price, stockCount, image, category } = req.body;
+    const { name, description, price, stockCount,category } = req.body;
+
+    const image = req.file ? `/uploads/products/${req.file.filename}` : null
 
     if (!name || !description || !category) {
         res.status(401);
@@ -18,7 +20,7 @@ export const createProducts = asyncHandler(async (req, res) => {
             price,
             stockCount,
             image,
-            category,
+            category,         
         },
     );
 
@@ -29,7 +31,7 @@ export const createProducts = asyncHandler(async (req, res) => {
 
 export const updateProduct = asyncHandler(async (req, res) => {
 
-    const { name, description, price, stockCount, image, category } = req.body;
+    const { name, description, price, stockCount, category } = req.body;
     const { id } = req.params;
     const product = await Product.findById(id);
 
@@ -44,6 +46,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
     product.category = category || product.category;
     if (stockCount !== undefined) product.stockCount = stockCount;
     if (price !== undefined) product.price = price;
+    if(req.file) product.image = `/uploads/products/${req.file.filename}`
 
 
     const updatedProduct = await product.save();

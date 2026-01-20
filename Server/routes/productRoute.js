@@ -8,15 +8,16 @@ import {
 } from '../controllers/productContoller.js';
 import { verifyUser } from '../middleware/verifyUser.js';
 import { isAdmin } from '../middleware/adminMiddleware.js';
-
+import upload from '../middleware/upload.js';
 
 const productRouter = express.Router();
 
 productRouter.post('/create-product', verifyUser, isAdmin, createProducts);
-productRouter.put('/update-product/:id', verifyUser, isAdmin, updateProduct);
+productRouter.put('/update-product/:id', verifyUser, isAdmin, upload.single('image'), updateProduct);
 productRouter.delete('/delete-product/:id', verifyUser, isAdmin, deleteProduct);
 productRouter.get('/products', getProducts);
-productRouter.get('/single-product', getSingleProduct)
+productRouter.get('/single-product:id', verifyUser, getSingleProduct)
+productRouter.post('/', verifyUser, isAdmin, upload.single('image'), createProducts);
 
 
 export default productRouter;
