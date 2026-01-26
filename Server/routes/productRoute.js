@@ -12,12 +12,11 @@ import upload from '../middleware/upload.js';
 
 const productRouter = express.Router();
 
-productRouter.post('/create-product', verifyUser, isAdmin, createProducts);
+productRouter.post('/create-product', verifyUser, isAdmin, upload.single('image'), createProducts);
 productRouter.put('/update-product/:id', verifyUser, isAdmin, upload.single('image'), updateProduct);
 productRouter.delete('/delete-product/:id', verifyUser, isAdmin, deleteProduct);
 productRouter.get('/products', getProducts);
-productRouter.get('/single-product:id', verifyUser, getSingleProduct)
-productRouter.post('/', verifyUser, isAdmin, upload.single('image'), createProducts);
+productRouter.get('/single-product/:id', getSingleProduct)
 
 
 export default productRouter;

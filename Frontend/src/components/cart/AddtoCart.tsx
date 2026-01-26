@@ -14,7 +14,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({ productId }) => {
     setLoading(true);
     try {
       await axios.post(
-        "/api/cart/add",
+        "/api/cart/add-to-cart",
         { productId, quantity: 1 },
         { withCredentials: true }
       );

@@ -8,6 +8,8 @@ import Profile from "./pages/Profile"
 import AdminLayout from "./components/ProtectLayout/AdminLayout"
 import Products from "./pages/Products"
 import CartPage from "./pages/CartPage"
+import CreateProduct from "./pages/CreateProduct"
+import ProductDetails from "./pages/ProductDetails"
 
 
 function App() {
@@ -24,11 +26,14 @@ function App() {
               <Route element={<ProtectRoute />}  >
                 <Route path="/" element={<HomePage />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/products" element={<Products/>} />
+                <Route path="/products" element={<Products />} />
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/product/:id" element={<ProductDetails/>} />
               </Route>
-              <Route element={<AdminLayout />}></Route>
-            </Route>
+              <Route element={<AdminLayout />}>
+                <Route path="/create-product" element={<CreateProduct/>}/>
+              </Route>
+              </Route>
           </Routes>
         </BrowserRouter>
       </div>

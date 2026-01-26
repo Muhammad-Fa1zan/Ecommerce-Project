@@ -4,7 +4,6 @@ import {
   ChevronDown,
   LayoutGrid,
   List,
-  Star,
   Heart,
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -13,25 +12,31 @@ import axios from "axios";
 import AddToCartButton from "../components/cart/AddtoCart";
 
 const Products = () => {
-  const [viewType, setViewType] = useState("grid");
+  const [viewType, setViewType] = useState<"grid" | "list">("grid");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Fetch products from backend
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchProducts = async () => {
       try {
-        const { data } = await axios.get<Product[]>("/api/product");
-        setProducts(data);
-      } catch (err) {
+        setLoading(true);
+        const { data } = await axios.get<{ products: Product[] }>("/api/item/products");
+        setProducts(data.products);
+        console.log(data.products);
+      } catch (err: any) {
         console.error(err);
+        setError("Failed to fetch products");
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+    fetchProducts();
   }, []);
 
   if (loading) return <p className="text-center py-20">Loading Products...</p>;
+  if (error) return <p className="text-center py-20 text-red-500">{error}</p>;
 
   return (
     <div className="min-h-screen bg-slate-50/50">
@@ -86,7 +91,7 @@ const Products = () => {
             </div>
           </aside>
 
-          {/* Products Grid */}
+          {/* Products Grid / List */}
           <div className="flex-1">
             {/* Toolbar */}
             <div className="flex items-center justify-between mb-8 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
@@ -127,7 +132,7 @@ const Products = () => {
               </div>
             </div>
 
-            {/* Grid */}
+            {/* Products */}
             <div
               className={`grid gap-6 ${
                 viewType === "grid"
@@ -137,25 +142,34 @@ const Products = () => {
             >
               {products.map((item) => (
                 <div
-                  key={item.id}
+                  key={item._id}
                   className={`bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl hover:shadow-slate-200/50 transition-all group ${
                     viewType === "list" ? "flex flex-row h-48" : ""
                   }`}
                 >
+                    <Link to={`/product/${item._id}`} className="flex-1">
                   {/* Image */}
                   <div
                     className={`bg-slate-100 relative overflow-hidden flex items-center justify-center text-4xl ${
                       viewType === "list" ? "w-48 h-full" : "aspect-square"
                     }`}
                   >
-                    {item.img}
+                    {item.image ? (
+                      <img
+                        className="w-full h-full object-cover"
+                        src={item.image}
+                        alt={item.name}
+                      />
+                    ) : (
+                      <span>No Image</span>
+                    )}
                     <button className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
                       <Heart className="size-4 text-slate-600 hover:text-red-500" />
                     </button>
                   </div>
 
                   {/* Details */}
-                  <Link to={`/product/${item.id}`} className="flex-1">
+                  
                     <div className="p-5 flex flex-col h-full">
                       <div className="flex justify-between items-start mb-1">
                         <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">
@@ -170,7 +184,7 @@ const Products = () => {
                         <span className="text-2xl font-black text-slate-900">
                           ${item.price}
                         </span>
-                        <AddToCartButton productId={item.id.toString()} />
+                        <AddToCartButton productId={item._id} />
                       </div>
                     </div>
                   </Link>

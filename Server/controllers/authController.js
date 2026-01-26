@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import User from '../models/userModel.js';
-import { jwtToken } from '../utlis/jwtToken.js';
+import { jwtToken } from '../utils/jwtToken.js';
 
 export const signup = asyncHandler(async (req, res) => {
 

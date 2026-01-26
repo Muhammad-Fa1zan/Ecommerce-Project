@@ -10,9 +10,6 @@ const AdminLayout = () => {
 
     return (
         <div className="flex">
-            <aside className="w-64 bg-white shadow h-screen">
-                Admin Sidebar
-            </aside>
             <main className="flex-1 p-6">
                 <Outlet />
             </main>

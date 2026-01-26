@@ -1,9 +1,12 @@
 import { ShoppingCart, ShieldCheck, Truck, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
+import { useState } from "react";
 
 const HomePage = () => {
   const { user } = useAuth();
+
+  
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -28,7 +31,7 @@ const HomePage = () => {
             Explore Products
           </Link>
 
-          {user?.role === 'admin' && <Link className="inline-block mt-8 bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-slate-100 transition" to="/Create-Product">Create Product</Link>}
+          {user?.role === 'admin' && <Link className="inline-block mt-8 bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-slate-100 transition" to="/create-product">Create Product</Link>}
           </div>
         </div>
       </section>
