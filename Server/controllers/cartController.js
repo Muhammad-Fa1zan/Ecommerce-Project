@@ -10,7 +10,7 @@ export const getCart = asyncHandler(async (req, res) => {
         res.status(404);
         throw new Error('Cart not found');
     }
-    res.status(200).json(cart);
+    res.status(200).json({cart});
 });
 
 export const addtoCart = asyncHandler(async (req, res) => {
@@ -37,6 +37,7 @@ export const addtoCart = asyncHandler(async (req, res) => {
                 product: productId,
                 quantity,
                 priceAtThatTime: product.price,
+                image : product.image
             }],
         });
     } else {
@@ -63,6 +64,7 @@ export const addtoCart = asyncHandler(async (req, res) => {
                 product: productId,
                 quantity,
                 priceAtThatTime: product.price,
+                image : product.image
             });
         }
     }
@@ -80,7 +82,6 @@ export const addtoCart = asyncHandler(async (req, res) => {
 export const removeItem = asyncHandler(async (req, res) => {
 
     const userID = req.user._id;
-    const { productId } = req.body;
 
     let cart = await Cart.findOne({ user: userID });
 
@@ -89,7 +90,7 @@ export const removeItem = asyncHandler(async (req, res) => {
         throw new Error('Cart not found');
     }
 
-    cart.items = cart.items.filter((item) => item.product.toString() !== productId.toString());
+    cart.items = cart.items.filter((item) => item.product.toString() !== req.params.id.toString());
     cart.totalPrice = cart.items.reduce((acc, item) => acc + item.quantity * item.priceAtThatTime, 0);
 
     await cart.save();

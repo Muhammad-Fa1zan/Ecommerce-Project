@@ -1,7 +1,7 @@
-// components/cart/EmptyCart.jsx
+
 import { ShoppingBag } from "lucide-react";
 
-const EmptyCart = () => {
+export const CartEmpty = () => {
   return (
     <div className="lg:col-span-2 text-center py-20 bg-white rounded-3xl border border-dashed">
       <ShoppingBag className="size-12 text-slate-300 mx-auto mb-4" />
@@ -10,4 +10,4 @@ const EmptyCart = () => {
   );
 };
 
-export default EmptyCart;
+

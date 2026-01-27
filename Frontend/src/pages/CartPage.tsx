@@ -1,16 +1,33 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Trash2 } from "lucide-react";
+import { useAuth } from "../context/AuthProvider";
+import type { CartItemType, GetCartResponse, } from "../types/cart";
+import { CartEmpty } from "../components/cart/CartEmpty";
+
+
 
 const Cart = () => {
-  const [cart, setCart] = useState<any[]>([]);
+  const [cart, setCart] = useState<CartItemType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const { user } = useAuth();
+
 
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const { data } = await axios.get("/api/cart");
-        setCart(data.items);
+        const { data } = await axios.get<GetCartResponse>(
+          "/api/cart/get-cart",
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+            },
+          }
+        );
+        setCart(data.cart.items);
+        setTotalPrice(data.cart.totalPrice);
       } catch (err) {
         console.error(err);
       } finally {
@@ -18,18 +35,21 @@ const Cart = () => {
       }
     };
 
-    fetchCart();
-  }, []);
+    if (user?.token) fetchCart();
+  }, [user]);
+
+
+
+  console.log(cart)
+
 
   const removeItem = async (id: string) => {
-    await axios.delete(`/api/cart/remove/${id}`);
+    await axios.delete(`/api/cart/remove-item/${id}`, {headers: { 'Authorization': `Bearer ${user?.token} ` } });
     setCart(cart.filter((item) => item._id !== id));
   };
 
-  const total = cart.reduce(
-    (acc, item) => acc + item.product.price * item.quantity,
-    0
-  );
+
+
 
   if (loading) return <p className="text-center py-20">Loading cart...</p>;
 
@@ -39,7 +59,7 @@ const Cart = () => {
         <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
 
         {cart.length === 0 ? (
-          <p className="text-center text-slate-500">Your cart is empty</p>
+          <CartEmpty />
         ) : (
           <div className="space-y-6">
             {cart.map((item) => (
@@ -57,7 +77,7 @@ const Cart = () => {
                     {item.product.name}
                   </h3>
                   <p className="text-slate-500">
-                    ${item.product.price} × {item.quantity}
+                    Rs {item.priceAtThatTime} × {item.quantity}
                   </p>
                 </div>
 
@@ -72,7 +92,7 @@ const Cart = () => {
 
             <div className="bg-white p-6 rounded-2xl shadow flex justify-between items-center">
               <span className="text-xl font-bold">Total</span>
-              <span className="text-2xl font-black">${total}</span>
+              <span className="text-2xl font-black">Rs {totalPrice}</span>
             </div>
 
             <button className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700">

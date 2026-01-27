@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ShoppingBag } from "lucide-react";
 import axios from "axios";
+import { useAuth } from "../../context/AuthProvider";
 
 interface AddToCartButtonProps {
   productId: string;
@@ -10,13 +11,15 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({ productId }) => {
   const [loading, setLoading] = useState(false);
   const [added, setAdded] = useState(false);
 
+  const { user } = useAuth();
+
   const handleAddToCart = async () => {
     setLoading(true);
     try {
       await axios.post(
         "/api/cart/add-to-cart",
         { productId, quantity: 1 },
-        { withCredentials: true }
+        { withCredentials: true , headers : {'Authorization' : `Bearer ${user?.token} `} }
       );
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);
