@@ -5,7 +5,7 @@ import Product from '../models/productsModel.js';
 
 export const getCart = asyncHandler(async (req, res) => {
     const userID = req.user._id;
-    const cart = await Cart.findOne({ user: userID });
+    const cart = await Cart.findOne({ user: userID }).populate('items.product');
     if (!cart) {
         res.status(404);
         throw new Error('Cart not found');
@@ -37,7 +37,6 @@ export const addtoCart = asyncHandler(async (req, res) => {
                 product: productId,
                 quantity,
                 priceAtThatTime: product.price,
-                image : product.image
             }],
         });
     } else {
@@ -64,7 +63,6 @@ export const addtoCart = asyncHandler(async (req, res) => {
                 product: productId,
                 quantity,
                 priceAtThatTime: product.price,
-                image : product.image
             });
         }
     }
@@ -90,7 +88,7 @@ export const removeItem = asyncHandler(async (req, res) => {
         throw new Error('Cart not found');
     }
 
-    cart.items = cart.items.filter((item) => item.product.toString() !== req.params.id.toString());
+    cart.items = cart.items.filter((item) => item._id.toString() !== req.params.id);
     cart.totalPrice = cart.items.reduce((acc, item) => acc + item.quantity * item.priceAtThatTime, 0);
 
     await cart.save();

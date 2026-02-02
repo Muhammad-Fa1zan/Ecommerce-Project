@@ -43,6 +43,7 @@ export const createOrder = asyncHandler(async (req, res) => {
          name: product.name,
          quantity: item.quantity,
          price: item.priceAtThatTime,
+         image: product.image
       });
    };
 

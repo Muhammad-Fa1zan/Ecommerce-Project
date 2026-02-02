@@ -26,6 +26,7 @@ const Cart = () => {
             },
           }
         );
+        console.log(data);
         setCart(data.cart.items);
         setTotalPrice(data.cart.totalPrice);
       } catch (err) {
@@ -40,7 +41,7 @@ const Cart = () => {
 
 
 
-  console.log(cart)
+  
 
 
   const removeItem = async (id: string) => {
